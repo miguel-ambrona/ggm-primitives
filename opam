@@ -1,0 +1,18 @@
+opam-version: "1.2"
+name:	      "ggm-primitives"
+maintainer:   ["Miguel Ambrona <miguel.ambrona@imdea.org>"]
+author:       ["Miguel Ambrona <miguel.ambrona@imdea.org>"]
+version:      "1.0.0"
+
+build: [
+  [make]
+]
+
+install: [make "install"]
+
+depends: [
+  "core_kernel"  {build}
+  "base64"       {build}
+  "menhir"       {build}
+]
+available: [ocaml-version >= "4.02.0"]

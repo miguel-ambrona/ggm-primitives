@@ -1,0 +1,9 @@
+*~
+Makefile
+configure
+_tags
+_build/*
+*.byte
+*.native
+*.txt
+*.py
