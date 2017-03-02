@@ -55,20 +55,20 @@ let main =
        let out_mpk_file = open_out mpk_file in
        fprintf out_mpk_file "%s" (IBE.string_of_mpk mpk);
        let _ = close_out_noerr out_mpk_file in
-       
+
        let out_msk_file = open_out msk_file in
        fprintf out_msk_file "%s" (IBE.string_of_msk msk);
        let _ = close_out_noerr out_msk_file in
        ()
-         
+
     | "keygen" ->
        let mpk_file = try search_argument "-mpk" with | Not_found -> failwith "missing argument -mpk" in
        let msk_file = try search_argument "-msk" with | Not_found -> failwith "missing argument -msk" in
        let out_file = try Some (search_argument "-out") with | Not_found -> None in
-       
+
        let mpk = input_file mpk_file |> IBE.mpk_of_string in
        let msk = input_file msk_file |> IBE.msk_of_string in
-       
+
        let id = (try search_argument "-id" with | Not_found -> failwith "missing argument -id") |> IBE.id_of_string in
 
        let sk = IBE.keygen mpk msk id in
@@ -90,15 +90,14 @@ let main =
 
        let mpk = input_file mpk_file |> IBE.mpk_of_string in
        let id = (try search_argument "-id" with | Not_found -> failwith "missing argument -id") |> IBE.id_of_string in
-       
+
        let gt_msg = IBE.rand_msg () in
        let ct = IBE.enc mpk id gt_msg in
        let ct_str = IBE.string_of_ct ct in
 
        let password = SHA.sha256 (IBE.string_of_msg gt_msg) in
-       F.printf "%s" password;
        AES.encrypt ~key:password ~in_file:msg_file ~out_file;
-       
+
        begin match out_file with
        | None -> ()
        | Some file ->
@@ -119,13 +118,12 @@ let main =
        let mpk = input_file mpk_file |> IBE.mpk_of_string in
        let sk  = input_file sk_file  |> IBE.sk_of_string in
        let ct  = IBE.ct_of_string ibe_ct in
-       
-       let command = Format.sprintf "printf '%s' > %s" aes_ct "/tmp/aux.txt" in
+
+       let command = Format.sprintf "printf '%s' > %s" (aes_ct ^ "\n") "/tmp/aux.txt" in
        let _ = Unix.open_process command in
 
        let gt_msg = IBE.dec mpk sk ct in
        let password = SHA.sha256 (IBE.string_of_msg gt_msg) in
-       F.printf "%s" password;
        AES.decrypt ~key:password ~in_file:"/tmp/aux.txt" ~out_file
-                   
+
     | _ -> output_string stderr man
