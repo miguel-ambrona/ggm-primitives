@@ -5,5 +5,4 @@ _tags
 _build/*
 *.byte
 *.native
-*.txt
 *.py
